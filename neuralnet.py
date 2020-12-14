@@ -278,12 +278,16 @@ class Net():
                 val_loss = self.loss_value
                 improvement = (prev_loss - val_loss)/prev_loss
                 print(f'Validation set loss = {round(val_loss, 3)}, Loss imporvement = {round(100 * improvement, 3)}%')
+                if improvement > 0:
+                    checkpoint = [w.weights for w in self.layers]
                 if improvement <= min_delta:
                     patience_counter += 1
                 else:
                     patience_counter = 0
                 prev_loss = val_loss
                 if patience_counter == patience:
+                    for l, cp in zip(self.layers, checkpoint):
+                        l.weights = cp
                     break
                 
                     
